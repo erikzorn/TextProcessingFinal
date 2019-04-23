@@ -63,11 +63,24 @@ print("\ntf_matrix row count: ", len(tf_matrix) )
 print("tf_matrix column count: ", len(tf_matrix[0]) )
 
 
+# this generates the matrix
+# each tf weight is divided by the max tf weight in that row. This is inteded to slightly
+# normalize the weights in that case that there is a document way bigger than other docs
+# so if the mac tf weight is for "cat" appearing 40 times and then the word "dog" appears
+# 4 times... the new weight for "cat" will be 1 and the weight for "dog" will be .1
+
+# ^^^ im pretty sure this will help when some docs have a weight for words that is huge becuase a lot of
+# words are in it because it will make there be a max of wieght 1 for any term. 
+
+# if we decide this is pointless, then we will remove the two lines indicsated in the for loop below
 for row, words in termsDictNums.items():
     for word, count in words.items():
         if (word not in stopwords):
             #print(word)
             tf_matrix[row][termDict[word]] = count
+    # comment these next to lines out if we want to remove normalizations
+    divisor = float(max(tf_matrix[row]))
+    tf_matrix[row][:] = [x / divisor for x in tf_matrix[row]]
 
 '''							words 	 					if you have a word, use termDict[<word>] 
 tf_matrix = [	 0  1  2  3  4  5  6  7  8  9  10 11	to get the index it belongs at			
@@ -108,7 +121,7 @@ print(pca.explained_variance_ratio_)
 # initialize kmeans clustering using 5 clusters
 # 5 was chosen after testing with different clusters and determining that 5 clusters
 # the results most effectively for the chosen dataset
-kmeans = KMeans(n_clusters=3)
+kmeans = KMeans(n_clusters=5)
 
 # fit the pca data using kmeans with 5 clusters
 X_clustered = kmeans.fit_predict(X)
