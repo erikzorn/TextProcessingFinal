@@ -7,10 +7,12 @@
 import pandas as pd
 import numpy as np
 
-#read in the data file into pandas data frame
+#read in the data file into pandas dataframe
 fakeNewsDF = pd.read_csv('./fake.csv')
+#get rid of punctuations
+fakeNewsDF.replace('-','')
 #split the text on white space for each one of the articles
-splitArticles = fakeNewsDF['text'].str.split(' ')
+splitArticles = fakeNewsDF['text'].str.lower().str.split(' ')
 #init dictionary to hold tf vals
 termsDict = {}
 #loop through all of the articles
@@ -19,3 +21,4 @@ for article in splitArticles:
     articleSeries = pd.Series(article)
     termsDict[index] = articleSeries.value_counts()
     index += 1
+print(termsDict)
